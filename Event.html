@@ -140,6 +140,55 @@
     });
     handler.openIframe();
   }
+  callback: function(response){
+    closeModal();
+    
+    // Send data to you
+    fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        phone: document.getElementById('custPhone').value,
+        ticket: selectedTicket,
+        amount: selectedAmount,
+        reference: response.reference,
+        event: "Afrobeats Night 2026"
+      })
+    });
+
+    alert('Payment successful! \nRef: ' + response.reference + '\nYour ticket will be sent to ' + email + ' in a few minutes');
+  }, 
+
+  callback: function(response){
+    closeModal();
+    
+    let ticketData = {
+      name: name,
+      email: email,
+      phone: document.getElementById('custPhone').value,
+      ticket: selectedTicket,
+      amount: selectedAmount,
+      reference: response.reference,
+      event: "Afrobeats Night 2026",
+      date: new Date().toLocaleString()
+    };
+
+    // 1. Save to browser so "My Tickets" can see it
+    let userTickets = JSON.parse(localStorage.getItem('sureTickets_' + email)) || [];
+    userTickets.push(ticketData);
+    localStorage.setItem('sureTickets_' + email, JSON.stringify(userTickets));
+
+    // 2. Send to you via Formspree/Google Sheets
+    fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(ticketData)
+    });
+
+    alert('Payment successful! \nRef: ' + response.reference + '\nCheck "My Tickets" page to see it');
+  },
 </script>
 </body>
 </html>
