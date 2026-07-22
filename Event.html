@@ -50,7 +50,7 @@
             </div>
             <div class="price-action">
               <span class="price">₦5,000</span>
-              <button class="btn-buy">Buy</button>
+              <button class="btn-buy" onclick="payWithPaystack(5000, 'Regular')">Buy</button>
             </div>
           </div>
 
@@ -61,7 +61,7 @@
             </div>
             <div class="price-action">
               <span class="price">₦20,000</span>
-              <button class="btn-buy">Buy</button>
+              <button class="btn-buy" onclick="payWithPaystack(20000, 'VIP')">Buy</button>
             </div>
           </div>
 
@@ -72,12 +72,36 @@
             </div>
             <div class="price-action">
               <span class="price">₦150,000</span>
-              <button class="btn-buy">Buy</button>
+<button class="btn-buy" onclick="payWithPaystack(150000, 'Table for 5')">Buy</button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+  function payWithPaystack(amount, ticketName) {
+    let handler = PaystackPop.setup({
+      key: 'pk_test_YOUR_PUBLIC_KEY', // We will get this from Paystack dashboard
+      email: 'customer@email.com', // Later we’ll add email input
+      amount: amount * 100, // Paystack uses kobo. ₦5000 = 500000 kobo
+      currency: "NGN",
+      ref: 'SURE_' + Math.floor((Math.random() * 1000000) + 1), // Unique ticket ref
+      metadata: {
+        ticket_type: ticketName,
+        event: "Afrobeats Night 2026"
+      },
+      callback: function(response){
+        alert('Payment successful! Ref: ' + response.reference);
+        // Later: save ticket to database and send email
+      },
+      onClose: function(){
+        alert('Payment cancelled');
+      }
+    });
+    handler.openIframe();
+  }
+</script>
 </body>
 </html>
