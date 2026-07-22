@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Tickets - SureTicket</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><h1>🎫 My Tickets</h1></header>
+  <main class="container">
+    <div class="card">
+      <h3>Find Your Tickets</h3>
+      <input type="email" id="searchEmail" placeholder="Enter email you used to buy" required>
+      <button onclick="loadTickets()" class="btn-buy">Search</button>
+    </div>
+    
+    <div id="ticketsList"></div>
+  </main>
+
+  <script>
+    function loadTickets() {
+      let email = document.getElementById('searchEmail').value.toLowerCase();
+      let tickets = JSON.parse(localStorage.getItem('sureTickets_' + email)) || [];
+      let list = document.getElementById('ticketsList');
+
+      if(tickets.length === 0) {
+        list.innerHTML = `<p>No tickets found for ${email}. Check the email or buy a ticket.</p>`;
+        return;
+      }
+
+      list.innerHTML = tickets.map(t => `
+        <div class="ticket-card">
+          <h4>${t.event}</h4>
+          <p><b>Type:</b> ${t.ticket}</p>
+          <p><b>Name:</b> ${t.name}</p>
+          <p><b>Ref:</b> ${t.reference}</p>
+          <p><b>Date:</b> ${t.date}</p>
+          <button onclick="downloadTicket('${t.reference}')">Download Ticket</button>
+        </div>
+      `).join('');
+    }
+
+    function downloadTicket(ref) {
+      alert('Downloading ticket: ' + ref + '\n\nLater we will generate real PDF + QR here');
+    }
+  </script>
+</body>
+</html>
